@@ -7,7 +7,7 @@ watch = StopWatch()
 
 color1 = ColorSensor(Port.S1)
 color2 = ColorSensor(Port.S2)
-color_detect = ColorSensor(Port.S3)
+color_detect = ColorSensor(Port.S3) # to detect a color of marking blocks
 
 left_motor = Motor(Port.A)
 right_motor = Motor(Port.B)
@@ -18,6 +18,7 @@ def speed_precent(percentage):
 
 class Tank:
     '''PID制御とMovetank,Movesteeringをまとめたclass'''
+    # pid-control mode-----------------------------------------------------------------------------
     Kp = 1.2
     Ki = 0.5
     Kd = 1.0
@@ -46,18 +47,20 @@ class Tank:
 
     def drive_pid_for_rotations(self, base_speed):
         '''drive under pid-control for specified rotations'''
-
+    # tank mode------------------------------------------------------------------------------------
     def drive(self, left_speed, right_speed):
         '''just drive such as tank'''
         left_motor.run(left_speed)
         right_motor.run(right_speed)
 
-    def drive_for_seconds(self, left_speed, right_speed, seconds, stop_type = "hold", ifwait=True):
+    def drive_for_seconds(self, left_speed, right_speed, seconds, stop_type = "hold"):
         '''drive in tank for specified seconds'''
-        left_motor.run_time(left_speed, seconds, stop_type, ifwait)
-        left_motor.run_time(right_speed, seconds, stop_type, ifwait)
+        left_motor.run_time(left_speed, seconds)
+        left_motor.run_time(right_speed, seconds)
+        wait(seconds * 1000)
+        self.stop(stop_type)
 
-    def drive_for_degrees(self, left_speed, right_speed, degrees):
+    def drive_for_degrees(self, left_speed, right_speed, degrees, stop_type = "hold"):
         '''drive in tank for specified degrees'''
         left_angle = left_motor.angle()
         right_angle = right_motor.angle()
@@ -65,17 +68,14 @@ class Tank:
                     or abs(right_angle - right_motor.angle()) > degrees):
             left_motor.run(left_speed)
             right_motor.run(right_speed)
+        self.stop(stop_type)
 
-    def drive_for_rotations(self, left_speed, right_speed, rotations):
+    def drive_for_rotations(self, left_speed, right_speed, rotations, stop_type = "hold"):
         '''drive in tank for specified rotations'''
         degrees = rotations * 360
-        left_angle = left_motor.angle()
-        right_angle = right_motor.angle()
-        while (not abs(left_angle - left_motor.angle()) > degrees
-                    or abs(right_angle - right_motor.angle()) > degrees):
-            left_motor.run(left_speed)
-            right_motor.run(right_speed)
-
+        self.drive_for_degrees(left_speed,right_speed,degrees)
+        self.stop(stop_type)
+    # steering mode--------------------------------------------------------------------------------
     def steering(self,power,steering):
         '''drive in steering forever'''
         if -100 > power or 100 > power:
@@ -112,7 +112,7 @@ class Tank:
         '''左右2つのモーターのどちらかの回転数の変化量が指定した回転数を超えるまでステアリングで走る'''
         self.steeing_for_degrees(power,steering,rotations * 360)
         self.stop(stop_type)
-
+    # stop-----------------------------------------------------------------------------------------
     def stop(self,stop_type):
         '''Just stop with the specified way'''
         if stop_type == "stop":
