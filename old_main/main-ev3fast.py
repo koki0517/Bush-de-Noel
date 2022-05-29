@@ -66,7 +66,7 @@ sound = Sound()
 class Sensors_color:
     def __init__(self,port):
         self.port = port
-    
+
     def color(self):
         if self.port == 1:
             return colorsensor1.color
@@ -78,9 +78,10 @@ class Sensors_color:
             sound.speak("Load color sensor")
             colorsensor4.mode = "COL-COLOR"
             sleep(sleep_time)
-            return colorsensor4.value()
+            color = colorsensor4.value()
             colorsensor4.mode = "COL-REFLECT"
             sleep(sleep_time)
+            return color
 
     def refrect(self):
         if self.port == 1:
@@ -100,7 +101,7 @@ CS4 = Sensors_color(4)
 class Sensors_touch:
     def __init__(self,port):
         self.port = port
-    
+
     def pressed(self):
         if self.port == 5:
             return True if touch_sensor_left.value() == 257 else False
@@ -113,7 +114,7 @@ TS_right = Sensors_touch(6)
 class Motor:
     def __init__(self,port):
         self.port = port
-    
+
     def position(self):
         return motor_l.position() if self.port == "left" else motor_r.position()
 
@@ -137,27 +138,27 @@ class Motors:
 
         u = (Motors.Kp * error) + (Motors.Ki * sum(Motors.errors)) + (Motors.Kd * (error - Motors.errors[-1]))
         movetank.on(base_power + u,base_power - u)
-    
+
     def on_pid_for_seconds(self,base_power,second,stop_type = True):
         limit = time.time() + second
         while limit > time.time():
             self.on_pid(base_power)
         movetank.off(stop_type)
-    
+
     def on_pid_for_degrees(self,base_power,degree,stop_type = True):
         initial_degree_left = motor_l.position()
         initial_degree_right = motor_r.position()
         while degree > ((abs(initial_degree_left - motor_l.position()) + abs(initial_degree_right - motor_r.position()))) / 2:
             self.on_pid(base_power)
         movetank.off(stop_type)
-    
+
     def on_pid_for_rotations(self,base_power,rotations,stop_type = True):
         initial_degree_left = motor_l.position()
         initial_degree_right = motor_r.position()
         while rotations > ((abs(initial_degree_left - motor_l.position()) + abs(initial_degree_right - motor_r.position()))) / 2 / 360:
             self.on_pid(base_power)
         movetank.off(stop_type)
-    
+
     def stop(self,stop_type = True):
         movetank.off(stop_type)
 
@@ -175,23 +176,23 @@ class Motors:
     def on_for_seconds(self,left_speed,right_speed,seconds,stop_type = True):
         movetank.on_for_seconds(left_speed,right_speed,seconds,stop_type)
             #on_for_seconds(left_speed, right_speed, seconds, brake=True, block=True)
-    
+
     def turn_left(self,base_power):
         movetank.on_for_degrees(-1 * base_power,base_power,None)
 
     def turn_right(self,base_power):
         movetank.on_for_degrees(base_power,-1 * base_power,None)
-    
+
     def on_steering(self,speed,steering):
         movesteering.on(steering,speed)
-    
+
     def on_for_degrees_steering(self,speed,steering,degrees,stop_type = True):
         movesteering.on_for_degrees(steering,speed,degrees,stop_type)
-    
+
     def on_for_rotations_steering(self,speed,steering,rotations,stop_type = True):
         movesteering.on_for_rotations(steering,speed,rotations,stop_type)
-    
-    def on_for_seconds_steering(speed,steering,seconds,stop_type = True):
+
+    def on_for_seconds_steering(self,speed,steering,seconds,stop_type = True):
         movesteering.on_for_seconds(steering,speed,seconds,stop_type)
 
     def black_quarter(self):
@@ -206,7 +207,7 @@ class Motors:
             if CS1.refrect() < black_highset_refrect:
                 while not CS2.color() == 1:
                     self.on(-30,30)
-                while not CS2.color == 6:
+                while not CS2.color() == 6:
                     self.on(-30,30)
             else:
                 while not CS3.color() == 1:
@@ -221,7 +222,7 @@ class Motors:
             if CS4.refrect() < black_highset_refrect:
                 while not CS3.color() == 1:
                     self.on(30,-30)
-                while not CS3.color == 6:
+                while not CS3.color() == 6:
                     self.on(30,-30)
             else:
                 while not CS2.color() == 1:
@@ -254,7 +255,7 @@ class Motors:
         self.stop()
 
     def avoid(self):
-        self.turn_right()
+        self.turn_right(50)
         first_position = motor_l.position()
         while abs(first_position - motor_l.position()) > None and TS_left.pressed() + TS_right.pressed() == 256 * 2:
             self.on(30,30)
@@ -262,8 +263,8 @@ class Motors:
 
         self.on_for_degrees(-30,-30,None)
         if turn_direction == -1:
-            self.turn_right()
-            self.turn_right()
+            self.turn_right(50)
+            self.turn_right(50)
 
     def save(self):
         pass
@@ -272,14 +273,14 @@ tank = Motors()
 # ----------------------------------------------------------------------------------------------------
 
 while not button.enter(): #wait while all buttons arent pressed
-    
+
     button.wait_for_pressed(['up', 'left']) # start button
-    
+
     if button.up():
         try:
             pass
-        except:
-            Sound.speak("a error has been found")
+        except TypeError as error:
+            Sound.speak(str(error))
         else:
             Sound.speak("No error has been found")
     else:
