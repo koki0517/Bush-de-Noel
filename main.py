@@ -25,6 +25,7 @@ class Tank:
     errors = [0,0,0,0,0]
 
     def drive_pid(self, base_speed):
+        '''drive under pid-control'''
         error = color1.refrection() - color2.refrection() - Tank.individual_difference
         Tank.errors.append(error)
         del Tank.errors[0]
@@ -35,55 +36,59 @@ class Tank:
         right_motor.run(base_speed - control_amount)
 
     def drive_pid_for_seconds(self, base_speed, time):
+        '''drive under pid-control for specified seconds'''
         time_run = watch.time() + time
         while watch.time() <= time_run:
             self.drive_pid(base_speed)
 
     def drive_pid_for_degrees(self, base_speed):
-        pass
+        '''drive under pid-control for specified degrees'''
 
     def drive_pid_for_rotations(self, base_speed):
-        pass
+        '''drive under pid-control for specified rotations'''
 
     def drive(self, left_speed, right_speed):
         '''just drive such as tank'''
         left_motor.run(left_speed)
         right_motor.run(right_speed)
 
-    def drive_for_seconds(self, left_speed, right_speed, time, stop_type = "hold", ifwait=True):
-        left_motor.run_time(left_speed, time, stop_type, ifwait)
-        left_motor.run_time(right_speed, time, stop_type, ifwait)
+    def drive_for_seconds(self, left_speed, right_speed, seconds, stop_type = "hold", ifwait=True):
+        '''drive in tank for specified seconds'''
+        left_motor.run_time(left_speed, seconds, stop_type, ifwait)
+        left_motor.run_time(right_speed, seconds, stop_type, ifwait)
 
     def drive_for_degrees(self, left_speed, right_speed, degrees):
+        '''drive in tank for specified degrees'''
         left_angle = left_motor.angle()
         right_angle = right_motor.angle()
-        while not abs(left_angle - left_motor.angle()) > degrees or abs(right_angle - right_motor.angle()) > degrees:
+        while (not abs(left_angle - left_motor.angle()) > degrees
+                    or abs(right_angle - right_motor.angle()) > degrees):
             left_motor.run(left_speed)
             right_motor.run(right_speed)
 
     def drive_for_rotations(self, left_speed, right_speed, rotations):
+        '''drive in tank for specified rotations'''
         degrees = rotations * 360
         left_angle = left_motor.angle()
         right_angle = right_motor.angle()
-        while not abs(left_angle - left_motor.angle()) > degrees or abs(right_angle - right_motor.angle()) > degrees:
+        while (not abs(left_angle - left_motor.angle()) > degrees
+                    or abs(right_angle - right_motor.angle()) > degrees):
             left_motor.run(left_speed)
             right_motor.run(right_speed)
 
     def steering(self,power,steering):
-        '''run on steering forever'''
+        '''drive in steering forever'''
         if -100 > power or 100 > power:
             raise ValueError
         if -100 <= steering < 0:
             left_motor.run(speed_precent((power / 50) * steering + power)) # 式①
             right_motor.run(speed_precent(power)) # 式②
-        elif 0 <= steering <= 100:
+        else:
             left_motor.run(speed_precent(power)) # 式③
             right_motor.run(speed_precent(-1 * (power / 50) * steering + power)) # 式④
-        else:
-            raise ValueError
 
     def steering_for_seconds(self,power,steering,seconds,stop_type = "hold"):
-        '''指定された時間ステアリングで走る'''
+        '''drive in steering for specified seconds'''
         if seconds <= 0:
             raise ValueError
         time_run = watch.time() + seconds
@@ -109,7 +114,7 @@ class Tank:
         self.stop(stop_type)
 
     def stop(self,stop_type):
-        '''Just stop'''
+        '''Just stop with the specified way'''
         if stop_type == "stop":
             left_motor.stop()
             right_motor.stop()
