@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-# from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank, MoveSteering
-# from ev3dev2.sensor import INPUT_1, INPUT_2, INPUT_3, INPUT_4
-# from ev3dev2.sensor.lego import TouchSensor, ColorSensor, UltrasonicSensor, Sensor
-# from ev3dev2.port import LegoPort
-# from ev3dev2.button import Button
-# from ev3dev2.sound import Sound
+from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank, MoveSteering
+from ev3dev2.sensor import INPUT_1, INPUT_2, INPUT_3, INPUT_4
+from ev3dev2.sensor.lego import TouchSensor, ColorSensor, UltrasonicSensor, Sensor
+from ev3dev2.port import LegoPort
+from ev3dev2.button import Button
+from ev3dev2.sound import Sound
 
 # from ev3dev.brickpi import *
 # from ev3dev.ev3 import *
@@ -158,7 +158,7 @@ class Motors:
             self.on_pid(base_power)
         movetank.off(stop_type)
     
-    def stop(stop_type = True):
+    def stop(self,stop_type = True):
         movetank.off(stop_type)
 
     def on(self,left_speed,right_speed):
@@ -182,13 +182,13 @@ class Motors:
     def turn_right(self,base_power):
         movetank.on_for_degrees(base_power,-1 * base_power,None)
     
-    def on_steering(speed,steering):
+    def on_steering(self,speed,steering):
         movesteering.on(steering,speed)
     
-    def on_for_degrees_steering(speed,steering,degrees,stop_type = True):
+    def on_for_degrees_steering(self,speed,steering,degrees,stop_type = True):
         movesteering.on_for_degrees(steering,speed,degrees,stop_type)
     
-    def on_for_rotations_steering(speed,steering,rotations,stop_type = True):
+    def on_for_rotations_steering(self,speed,steering,rotations,stop_type = True):
         movesteering.on_for_rotations(steering,speed,rotations,stop_type)
     
     def on_for_seconds_steering(speed,steering,seconds,stop_type = True):

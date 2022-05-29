@@ -204,7 +204,7 @@ class Motors:
             if CS1.refrect() < black_highset_refrect:
                 while not CS2.color() == 1:
                     self.on(-30,30)
-                while not CS2.color == 6:
+                while not CS2.color() == 6:
                     self.on(-30,30)
             else:
                 while not CS3.color() == 1:
@@ -219,7 +219,7 @@ class Motors:
             if CS4.refrect() < black_highset_refrect:
                 while not CS3.color() == 1:
                     self.on(30,-30)
-                while not CS3.color == 6:
+                while not CS3.color() == 6:
                     self.on(30,-30)
             else:
                 while not CS2.color() == 1:
@@ -252,7 +252,7 @@ class Motors:
         self.stop()
 
     def avoid(self):
-        self.turn_right()
+        self.turn_right(50)
         first_position = motor_l.position()
         while abs(first_position - motor_l.position()) > None and TS_left.pressed() + TS_right.pressed() == 256 * 2:
             self.on(30,30)
@@ -260,8 +260,8 @@ class Motors:
 
         self.on_for_degrees(-30,-30,None)
         if turn_direction == -1:
-            self.turn_right()
-            self.turn_right()
+            self.turn_right(50)
+            self.turn_right(50)
 
     def save(self):
         pass
@@ -276,8 +276,10 @@ while not button.enter(): #wait while all buttons arent pressed
     if button.up():
         try:
             pass
-        except:
-            Sound.speak("a error has been found")
+        except ZeroDivisionError as error:
+            Sound.speak(str(error))
+        except TypeError as error:
+            Sound.speak(str(error))
         else:
             Sound.speak("No error has been found")
     else:
