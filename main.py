@@ -47,6 +47,7 @@ class Tank:
 
     def drive_pid_for_rotations(self, base_speed):
         '''drive under pid-control for specified rotations'''
+
     # tank mode------------------------------------------------------------------------------------
     def drive(self, left_speed, right_speed):
         '''just drive such as tank'''
@@ -75,6 +76,7 @@ class Tank:
         degrees = rotations * 360
         self.drive_for_degrees(left_speed,right_speed,degrees)
         self.stop(stop_type)
+
     # steering mode--------------------------------------------------------------------------------
     def steering(self,power,steering):
         '''drive in steering forever'''
@@ -112,6 +114,7 @@ class Tank:
         '''左右2つのモーターのどちらかの回転数の変化量が指定した回転数を超えるまでステアリングで走る'''
         self.steeing_for_degrees(power,steering,rotations * 360)
         self.stop(stop_type)
+
     # stop-----------------------------------------------------------------------------------------
     def stop(self,stop_type):
         '''Just stop with the specified way'''
@@ -126,3 +129,7 @@ class Tank:
             right_motor.hold()
         else:
             raise ValueError
+
+# main program
+# 以下Mapの上向きを北として表記する。
+
