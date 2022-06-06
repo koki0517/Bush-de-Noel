@@ -51,13 +51,13 @@ class Tank:
     # tank mode------------------------------------------------------------------------------------
     def drive(self, left_speed, right_speed):
         '''just drive such as tank'''
-        left_motor.run(left_speed)
-        right_motor.run(right_speed)
+        left_motor.run(speed_precent(left_speed))
+        right_motor.run(speed_precent(right_speed))
 
     def drive_for_seconds(self, left_speed, right_speed, seconds, stop_type = "hold"):
         '''drive in tank for specified seconds'''
-        left_motor.run_time(left_speed, seconds)
-        left_motor.run_time(right_speed, seconds)
+        left_motor.run_time(speed_precent(left_speed), seconds)
+        left_motor.run_time(speed_precent(right_speed), seconds)
         wait(seconds * 1000)
         self.stop(stop_type)
 
@@ -67,8 +67,8 @@ class Tank:
         right_angle = right_motor.angle()
         while (not abs(left_angle - left_motor.angle()) > degrees
                     or abs(right_angle - right_motor.angle()) > degrees):
-            left_motor.run(left_speed)
-            right_motor.run(right_speed)
+            left_motor.run(speed_precent(left_speed))
+            right_motor.run(speed_precent(right_speed))
         self.stop(stop_type)
 
     def drive_for_rotations(self, left_speed, right_speed, rotations, stop_type = "hold"):
@@ -130,6 +130,24 @@ class Tank:
         else:
             raise ValueError
 
+tank = Tank()
 # main program
 # 以下Mapの上向きを北として表記する。
 
+if __name__ == '__main__':
+    pass
+    # 1.スタートする
+    # 2.水をとるx2
+    # 3.マーキングブロックを読み取る
+    # 　（緑の場合）
+    # 　Ⅰ.入口に水を置く
+    # 　Ⅱ.ボールをボール入れ
+    # 　（白の場合）
+    # 　Ⅰ.水を机の上に置くx1
+    # 4.洗濯物を回収し、ラインの中央に置く
+    # 5. 3,4を向かい側で繰り返す
+    # 6.洗濯物x2を回収する
+    # 7.洗濯物を洗濯機に入れる。
+    # （洗濯機の色と洗濯物のが一致しないと減点）
+    # ※洗濯機が枠の外へ動く　GAMEOVER　
+    # 8.スタート地点に戻る→終了
