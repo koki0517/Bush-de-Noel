@@ -30,11 +30,11 @@ class Tank:
         error = color1.refrection() - color2.refrection() - Tank.individual_difference
         Tank.errors.append(error)
         del Tank.errors[0]
-        control_amount = (Tank.Kp * error
+        sum_control_amount = (Tank.Kp * error
                              + Tank.Ki * sum(Tank.errors)
                                  + Tank.Kd * (error - Tank.errors[-1]))
-        left_motor.run(base_speed + control_amount)
-        right_motor.run(base_speed - control_amount)
+        left_motor.run(base_speed + sum_control_amount)
+        right_motor.run(base_speed - sum_control_amount)
 
     def drive_pid_for_seconds(self, base_speed, time):
         '''drive under pid-control for specified seconds'''
