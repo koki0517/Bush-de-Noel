@@ -34,8 +34,8 @@ class Tank:
         sum_control_amount = (Tank.Kp * error
                              + Tank.Ki * sum(Tank.errors)
                                  + Tank.Kd * (error - Tank.errors[-1]))
-        left_motor.run(base_speed + sum_control_amount)
-        right_motor.run(base_speed - sum_control_amount)
+        left_motor.run(speed_precent(base_speed) + sum_control_amount)
+        right_motor.run(speed_precent(base_speed) - sum_control_amount)
 
     def drive_pid_for_seconds(self, base_speed, time, stop_type = "hold"):
         '''drive under pid-control for specified seconds'''
