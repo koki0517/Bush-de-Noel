@@ -6,8 +6,8 @@ from pybricks.tools import wait, StopWatch
 
 watch = StopWatch()
 
-color_left = ColorSensor(Port.S1)
-color_right = ColorSensor(Port.S2)
+color1 = ColorSensor(Port.S1)
+color2 = ColorSensor(Port.S2)
 color_detect = ColorSensor(Port.S3) # to detect a color of marking blocks
 
 left_motor = Motor(Port.A)
@@ -28,7 +28,7 @@ class Tank:
 
     def drive_pid(self, base_speed):
         '''drive under pid-control'''
-        error = color_left.refrection() - color_right.refrection() - Tank.individual_difference
+        error = color1.refrection() - color2.refrection() - Tank.individual_difference
         Tank.errors.append(error)
         del Tank.errors[0]
         sum_control_amount = (Tank.Kp * error
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     # 1.スタートする
     tank.steering_for_degrees(30,-100,None,"hold")
     while True:
-        if color_left.color() == "Color.BLACK" and color_right.color() == "Color.BLACK":
+        if color1.color() == "Color.BLACK" and color2.color() == "Color.BLACK":
             break
         tank.drive_pid(30)
     tank.drive_pid_for_degrees(30, None)
