@@ -1,5 +1,4 @@
 #!/usr/bin/env pybricks-micropython
-from tkinter import N
 from pybricks.ev3devices import Motor, ColorSensor, TouchSensor
 from pybricks.parameters import Port, Direction, Color, Button
 from pybricks.tools import wait, StopWatch
