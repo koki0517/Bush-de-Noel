@@ -1,13 +1,12 @@
 #!/usr/bin/env pybricks-micropython
-from tkinter import N
 from pybricks.ev3devices import Motor, ColorSensor, TouchSensor
 from pybricks.parameters import Port, Direction, Color, Button
 from pybricks.tools import wait, StopWatch
 
 watch = StopWatch()
 
-color1 = ColorSensor(Port.S1)
-color2 = ColorSensor(Port.S2)
+color_left = ColorSensor(Port.S1)
+color_right = ColorSensor(Port.S2)
 color_detect = ColorSensor(Port.S3) # to detect a color of marking blocks
 
 left_motor = Motor(Port.A)
@@ -28,14 +27,14 @@ class Tank:
 
     def drive_pid(self, base_speed):
         '''drive under pid-control'''
-        error = color1.refrection() - color2.refrection() - Tank.individual_difference
+        error = color_left.refrection() - color_right.refrection() - Tank.individual_difference
         Tank.errors.append(error)
         del Tank.errors[0]
         sum_control_amount = (Tank.Kp * error
                              + Tank.Ki * sum(Tank.errors)
                                  + Tank.Kd * (error - Tank.errors[-1]))
-        left_motor.run(base_speed + sum_control_amount)
-        right_motor.run(base_speed - sum_control_amount)
+        left_motor.run(speed_precent(base_speed) + sum_control_amount)
+        right_motor.run(speed_precent(base_speed) - sum_control_amount)
 
     def drive_pid_for_seconds(self, base_speed, time, stop_type = "hold"):
         '''drive under pid-control for specified seconds'''
@@ -151,7 +150,7 @@ if __name__ == '__main__':
     # 1.スタートする
     tank.steering_for_degrees(30,-100,None,"hold")
     while True:
-        if color1.color() == "Color.BLACK" and color2.color() == "Color.BLACK":
+        if color_left.color() == "Color.BLACK" and color_right.color() == "Color.BLACK":
             break
         tank.drive_pid(30)
     tank.drive_pid_for_degrees(30, None)
